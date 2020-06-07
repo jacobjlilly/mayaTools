@@ -25,5 +25,7 @@ for jnt in sel:
 	#Reparent joint to its original parent
 	if parJnt:
 		cmds.parent(jnt, parJnt)
+	else:
+		cmds.parent(jnt, w=1)
 
 cmds.delete(mirrorJnt)
