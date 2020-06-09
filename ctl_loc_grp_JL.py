@@ -23,11 +23,11 @@ for jnt in cmds.ls(sl=1):
 
 	# Rename
 	cmds.select(ctl)
-	cmds.rename(jnt.replace(jnt[-3:], 'CTL'))
+	ctl = cmds.rename(jnt.replace(jnt[-3:], 'CTL'))
 	cmds.select(loc)
-	cmds.rename(jnt.replace(jnt[-3:], 'LOC'))
+	loc = cmds.rename(jnt.replace(jnt[-3:], 'LOC'))
 	cmds.select(grp)
-	cmds.rename(jnt.replace(jnt[-3:], 'GRP'))
+	grp = cmds.rename(jnt.replace(jnt[-3:], 'GRP'))
 
 	# Delete history on ctl
 	cmds.select(ctl)
