@@ -23,11 +23,17 @@ def sot_ui_JL():
 	cmds.rowColumnLayout(nr=10, adj=1)
 
 	cmds.button(l='0.0097', c = 'import skinning_opacity_tool_JL as sot; reload(sot); sot.lowest()')
+	cmds.button(l='0.1', c = 'import skinning_opacity_tool_JL as sot; reload(sot); sot.point1()')
+
 	cmds.button(l='1.0', c = 'import skinning_opacity_tool_JL as sot; reload(sot); sot.max()')
 
 def lowest():
 	mel.eval('ArtPaintSkinWeightsToolOptions')
 	mel.eval('artAttrSkinPaintCtx -e -opacity 0.00970874 `currentCtx`;')
+
+def point1():
+	mel.eval('ArtPaintSkinWeightsToolOptions')
+	mel.eval('artAttrSkinPaintCtx -e -opacity 0.1 `currentCtx`;')
 
 def max():
 	mel.eval('ArtPaintSkinWeightsToolOptions')
