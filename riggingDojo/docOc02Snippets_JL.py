@@ -1,6 +1,7 @@
 """
 A few snippets from a doc oc tentacle rig
 Just some random code I wrote and edited as I made SDK's on the claws
+and space switches
 Not intended to be run all at once
 -Jacob Lilly
 """
@@ -82,11 +83,9 @@ for space in spaces:
 	cmds.parent(grp, cmds.listRelatives(ikGrp, p=1))
 	cmds.parent(ikGrp, grp)
 	
-	cmds.pointConstraint(root, grp)
-	cmds.orientConstraint(root, grp)
-	
-	cmds.connectAttr('config_ctl.' + space, \
-	 						'{}_pointConstraint1.{}W0'.format(grp, root))
-	cmds.connectAttr('config_ctl.' + space, \
-	 						'{}_orientConstraint1.{}W0'.format(grp, root))
+	point = cmds.pointConstraint(root, grp)[0]
+	orient = cmds.orientConstraint(root, grp)[0]
+
+	cmds.connectAttr('config_ctl.' + space, point + '.' + root + 'W0')
+	cmds.connectAttr('config_ctl.' + space, orient + '.' + root + 'W0')
 
