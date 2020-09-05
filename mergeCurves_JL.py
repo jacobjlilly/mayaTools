@@ -15,4 +15,6 @@ for child in children:
 		cmds.parent(s, par, r=1,s=1)
 		
 	cmds.delete(child)
-	
+
+# Bug: Fix for curves already in a hierarchy
+# Using CGM Toolbox instead of this script for now
