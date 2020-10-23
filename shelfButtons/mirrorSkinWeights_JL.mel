@@ -1,0 +1,7 @@
+// Mirror skin weights (even when not in bind pose)
+
+int $frame = `currentTime -q`;
+currentTime 0;
+gotoBindPose;
+MirrorSkinWeights;
+currentTime $frame;
