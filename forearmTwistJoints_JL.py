@@ -78,8 +78,17 @@ def driveJoints(drivers):
     cmds.connectAttr(twistDiv + ".output", drivers[1] + ".rotate")
 
 
-# Connect to skinning joints (may need to create skinning joint(s))
-
+# Connect to skinning joints
+def connectSkinJoints(wristJnt, elbowJnt, drivers):
+    
+    # Duplicate the intermediate joint for skinning
+    bindMidJnt = cmds.duplicate(
+        drivers[1], n=drivers[1].replace("Driver1", "Bind1"))[0]
+    cmds.parent(bindMidJnt, elbowJnt)
+    
+    cmds.connectAttr(drivers[1] + ".translate", bindMidJnt + ".translate")
+    cmds.connectAttr(drivers[1] + ".rotate", bindMidJnt + ".rotate")
+    cmds.connectAttr(drivers[1] + ".scale", bindMidJnt + ".scale")
 
 def run():
     
@@ -89,6 +98,7 @@ def run():
     drivers = createTwistJnts(wrist_jnt)
     createAimConstraint(elbow_jnt, wrist_jnt, drivers)
     driveJoints(drivers)
+    connectSkinJoints(wrist_jnt, elbow_jnt, drivers)
     print("Twist joints set up")
 
 run()
