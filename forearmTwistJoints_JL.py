@@ -4,7 +4,7 @@ Forearm twist joints
 Using TD Matt's method 2 from td-matt.blogspot.com, this sets up twist 
 joints for the forearm using an aim constraint.
 
-Jacob Lilly 11.22.2020
+Jacob Lilly
 """
 
 from maya import cmds
@@ -60,40 +60,45 @@ def createAimConstraint(elbowJnt, wristJnt, drivers):
     
     # Create the aim constraint
     cmds.aimConstraint(
-        elbowJnt, drivers[2], \
+        elbowJnt, drivers[-1], \
         u = (0, 1, 0), wut = "object", wuo = upVec, mo=0)
     
 
-# Drive joints
+# Set up connections from the wrist driver joint to the other twisty
+# "driver" joints
 def driveJoints(drivers):
+    
+    for i in range(len(drivers)):
+        if (i != 0 and i != len(drivers)-1):
+            # Create multiply divide nodes
+            multDiv = cmds.shadingNode("multiplyDivide", au = 1, \
+                n = drivers[i].replace("Bind", "").replace("jnt", "div"))
+            cmds.setAttr(multDiv + ".operation", 2) # Set to divide
+            cmds.setAttr(multDiv + ".input2X", 2) # Manually change these
+            
+            # Connect nodes
+            cmds.connectAttr(drivers[-1] + ".rotate", multDiv + ".input1")
+            cmds.connectAttr(multDiv + ".output", drivers[i] + ".rotate")
 
-    # Create multiply divide node
-    twistDiv = cmds.shadingNode(
-        "multiplyDivide", au=1, n = "rt_arm1Twist_div")
-    cmds.setAttr(twistDiv + ".operation", 2)
-    cmds.setAttr(twistDiv + ".input2X", 2)
 
-    # Connections
-    cmds.connectAttr(drivers[2] + ".rotate", twistDiv + ".input1")
-    cmds.connectAttr(twistDiv + ".output", drivers[1] + ".rotate")
-
-
-# Connect to skinning joints
+# Connect to skinning joints (may need to create skinning joint(s))
 def connectSkinJoints(wristJnt, elbowJnt, drivers):
     
     # Duplicate the intermediate joint for skinning
     bindMidJnt = cmds.duplicate(
         drivers[1], n=drivers[1].replace("Driver1", "Bind1"))[0]
-    cmds.parent(bindMidJnt, elbowJnt)
+    grp = cmds.group(n=bindMidJnt.replace("jnt", "grp"))
+    cmds.parent(grp, elbowJnt)
     
-    cmds.connectAttr(drivers[1] + ".translate", bindMidJnt + ".translate")
-    cmds.connectAttr(drivers[1] + ".rotate", bindMidJnt + ".rotate")
-    cmds.connectAttr(drivers[1] + ".scale", bindMidJnt + ".scale")
+    cmds.connectAttr(drivers[1] + ".translate", grp + ".translate")
+    cmds.connectAttr(drivers[1] + ".rotate", grp + ".rotate")
+    cmds.connectAttr(drivers[1] + ".scale", grp + ".scale")
 
 def run():
     
     elbow_jnt = "rt_arm1_jnt"
     wrist_jnt = "rt_arm2_jnt"
+    jnt_num = 3 # Number of intermediate joints to create
     
     drivers = createTwistJnts(wrist_jnt)
     createAimConstraint(elbow_jnt, wrist_jnt, drivers)
